@@ -120,7 +120,7 @@
             </div>
 
             <!-- 右侧预览区域 -->
-            <div class="p-4 md:p-8 rounded-2xl shadow-lg flex items-center justify-center" style="background-image: url('./images/background.png'); background-size: cover; background-position: top;">
+            <div class="p-4 md:p-8 rounded-2xl shadow-lg flex items-center justify-center" style="background-image: url('images/background.png'); background-size: cover; background-position: top;">
                 <div id="preview-container" class="w-full max-w-md bg-white rounded-xl shadow-2xl relative overflow-hidden">
                     <div class="p-6">
                         <div class="flex justify-between items-center mb-4">
@@ -147,7 +147,7 @@
                              <div class="flex items-start">
                                 <span class="w-28 text-gray-500 shrink-0 pt-1">证明材料：</span>
                                 <div id="preview-proof" class="font-medium text-gray-800 flex items-center gap-2">
-                                    <img id="proof-image-preview" src="./images/placeholder.png" alt="证明材料" class="w-24 h-auto rounded-md border">
+                                    <img id="proof-image-preview" src="images/placeholder.png" alt="证明材料" class="w-24 h-auto rounded-md border">
                                     <div class="text-left">
                                       <span id="proof-filename" class="text-sm">image.jpg</span>
                                       <button class="text-red-500 text-lg ml-1">&times;</button>
@@ -157,7 +157,7 @@
                         </div>
                     </div>
 
-                    <img id="stamp-image" src="./images/stamp.png" alt="审批通过" class="absolute top-8 right-8 w-28 h-28 transform rotate-15 opacity-80 pointer-events-none hidden">
+                    <img id="stamp-image" src="images/stamp.png" alt="审批通过" class="absolute top-8 right-8 w-28 h-28 transform rotate-15 opacity-80 pointer-events-none hidden">
                     
                     <div id="preview-buttons" class="bg-gray-50 p-6 flex justify-around border-t">
                         <button class="py-2 px-8 bg-red-600 text-white rounded-full font-semibold hover:bg-red-700 transition">取消申请</button>
@@ -268,7 +268,7 @@
                     proofImagePreview.src = URL.createObjectURL(file);
                     proofFilename.textContent = file.name;
                 } else {
-                    proofImagePreview.src = './images/placeholder.png';
+                    proofImagePreview.src = 'images/placeholder.png';
                     proofFilename.textContent = 'image.jpg';
                 }
             });
@@ -320,8 +320,11 @@
                         
                         buttonsToHide.style.display = 'flex';
                     };
-
-                    bgImage.src = '.\images\background.png';
+                    bgImage.onerror = () => {
+                        console.error("背景图片加载失败!");
+                        buttonsToHide.style.display = 'flex';
+                    };
+                    bgImage.src = 'images/background.png';
 
                 }).catch(err => {
                     console.error("导出图片失败:", err);
@@ -335,5 +338,4 @@
     </script>
 </body>
 </html>
-
 
