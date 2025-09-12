@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>请假条生成器</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" xintegrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoVBL5gI9kDXrd3NBGhpqaodQYDqrQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', 'Helvetica Neue', 'Arial', 'sans-serif';
+            background-color: #f0f2f5;
+        }
+        /* 禁用按钮样式 */
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+    <div class="max-w-7xl mx-auto">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-800">请假条生成器</h1>
+            <p class="text-gray-500 mt-2">请在左侧表单中填写信息，右侧将实时生成预览。</p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- 左侧表单区域 -->
+            <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg">
+                <div class="flex justify-between items-center border-b pb-4 mb-6">
+                    <h2 class="text-2xl font-semibold text-gray-700">填写信息</h2>
+                    <button type="button" id="export-btn" class="text-sm bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-700 transition flex items-center">
+                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                         </svg>
+                        导出图片
+                    </button>
+                </div>
+                <form id="leave-form" class="space-y-4">
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-gray-600 mb-1">姓名</label>
+                        <input type="text" id="name" name="name" value="王文轩" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition">
+                    </div>
+                    <div>
+                        <label for="leave-type" class="block text-sm font-medium text-gray-600 mb-1">请假类型</label>
+                        <select id="leave-type" name="leave-type" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition">
+                            <option>病假</option>
+                            <option>事假</option>
+                            <option>婚假</option>
+                            <option>丧假</option>
+                            <option>产假</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="start-time" class="block text-sm font-medium text-gray-600 mb-1">开始时间</label>
+                        <input type="datetime-local" id="start-time" name="start-time" value="2025-05-07T08:25" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition">
+                    </div>
+                    <div>
+                        <label for="end-time" class="block text-sm font-medium text-gray-600 mb-1">结束时间</label>
+                        <input type="datetime-local" id="end-time" name="end-time" value="2025-05-09T20:05" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition">
+                    </div>
+                    <div class="pt-2 space-y-2">
+                        <label class="block text-sm font-medium text-gray-600">是否离校</label>
+                         <div class="flex items-center">
+                            <input type="radio" id="not-leaving" name="leave-option" value="not-leaving" class="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500">
+                            <label for="not-leaving" class="ml-2 block text-sm font-medium text-gray-700">不离校</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="radio" id="leave-campus-stay-jinan" name="leave-option" value="stay" class="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500">
+                            <label for="leave-campus-stay-jinan" class="ml-2 block text-sm font-medium text-gray-700">离校，不离开济南</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="radio" id="leave-campus-leave-jinan" name="leave-option" value="leave" class="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500" checked>
+                            <label for="leave-campus-leave-jinan" class="ml-2 block text-sm font-medium text-gray-700">离校，并离开济南</label>
+                        </div>
+                    </div>
+                    <!-- 条件性显示的表单项 -->
+                    <div id="destination-details" class="hidden space-y-4 pt-2">
+                         <div>
+                            <label for="destination-city" class="block text-sm font-medium text-gray-600 mb-1">目的地省市</label>
+                            <input type="text" id="destination-city" name="destination-city" value="山东省青岛市" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition">
+                        </div>
+                        <div>
+                            <label for="destination-address" class="block text-sm font-medium text-gray-600 mb-1">具体地点</label>
+                            <input type="text" id="destination-address" name="destination-address" value="市南区XX路XX号" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition">
+                        </div>
+                        <div>
+                            <label for="transport-mode" class="block text-sm font-medium text-gray-600 mb-1">出行方式</label>
+                            <input type="text" id="transport-mode" name="transport-mode" value="高铁" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="parent-phone" class="block text-sm font-medium text-gray-600 mb-1">家长联系电话</label>
+                        <input type="tel" id="parent-phone" name="parent-phone" value="19862141721" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition">
+                    </div>
+                    <div>
+                        <label for="approver" class="block text-sm font-medium text-gray-600 mb-1">审批人</label>
+                        <input type="text" id="approver" name="approver" value="孙梅雪" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition">
+                    </div>
+                    <div>
+                        <label for="reason" class="block text-sm font-medium text-gray-600 mb-1">请假原因</label>
+                        <textarea id="reason" name="reason" rows="3" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition">病毒性肠胃炎</textarea>
+                    </div>
+                    <div>
+                        <label for="proof-upload" class="block text-sm font-medium text-gray-600 mb-1">证明材料</label>
+                        <input type="file" id="proof-upload" name="proof-upload" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                    </div>
+                    <div>
+                        <label for="status" class="block text-sm font-medium text-gray-600 mb-1">审批状态</label>
+                         <select id="status" name="status" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition">
+                            <option value="approved">审批通过</option>
+                            <option value="pending">审批中</option>
+                            <option value="rejected">审批驳回</option>
+                            <option value="none">不显示</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+
+            <!-- 右侧预览区域 -->
+            <div class="p-4 md:p-8 rounded-2xl shadow-lg flex items-center justify-center" style="background-image: url('./images/background.png'); background-size: cover; background-position: top;">
+                <div id="preview-container" class="w-full max-w-md bg-white rounded-xl shadow-2xl relative overflow-hidden">
+                    <div class="p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-xl font-bold text-gray-800">记录详情</h3>
+                            <span class="text-gray-400 text-2xl cursor-pointer">&times;</span>
+                        </div>
+                        
+                        <div class="space-y-3 text-base">
+                            <div class="flex"><span class="w-28 text-gray-500 shrink-0">姓名：</span><span id="preview-name" class="font-medium text-gray-800"></span></div>
+                            <div class="flex"><span class="w-28 text-gray-500 shrink-0">请假类型：</span><span id="preview-leave-type" class="font-medium text-gray-800"></span></div>
+                            <div class="flex"><span class="w-28 text-gray-500 shrink-0">开始时间：</span><span id="preview-start-time" class="font-medium text-gray-800"></span></div>
+                            <div class="flex"><span class="w-28 text-gray-500 shrink-0">结束时间：</span><span id="preview-end-time" class="font-medium text-gray-800"></span></div>
+                            <div class="flex"><span class="w-28 text-gray-500 shrink-0">是否离校：</span><span id="preview-is-leaving" class="font-medium text-gray-800"></span></div>
+                             <!-- 条件性显示的预览项 -->
+                            <div id="preview-destination-details" class="hidden space-y-3">
+                                <div class="flex"><span class="w-28 text-gray-500 shrink-0">目的地省市：</span><span id="preview-destination-city" class="font-medium text-gray-800"></span></div>
+                                <div class="flex"><span class="w-28 text-gray-500 shrink-0">具体地点：</span><span id="preview-destination-address" class="font-medium text-gray-800"></span></div>
+                                <div class="flex"><span class="w-28 text-gray-500 shrink-0">出行方式：</span><span id="preview-transport-mode" class="font-medium text-gray-800"></span></div>
+                            </div>
+                            <div class="flex"><span class="w-28 text-gray-500 shrink-0">家长联系电话：</span><span id="preview-parent-phone" class="font-medium text-gray-800"></span></div>
+                            <div class="flex"><span class="w-28 text-gray-500 shrink-0">审批人：</span><span id="preview-approver" class="font-medium text-gray-800"></span></div>
+                            <div class="flex"><span class="w-28 text-gray-500 shrink-0">当前审批流程：</span><span class="font-medium text-gray-800">审批结束</span></div>
+                            <div class="flex"><span class="w-28 text-gray-500 shrink-0">请假原因：</span><span id="preview-reason" class="font-medium text-gray-800"></span></div>
+                             <div class="flex items-start">
+                                <span class="w-28 text-gray-500 shrink-0 pt-1">证明材料：</span>
+                                <div id="preview-proof" class="font-medium text-gray-800 flex items-center gap-2">
+                                    <img id="proof-image-preview" src="./images/placeholder.png" alt="证明材料" class="w-24 h-auto rounded-md border">
+                                    <div class="text-left">
+                                      <span id="proof-filename" class="text-sm">image.jpg</span>
+                                      <button class="text-red-500 text-lg ml-1">&times;</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <img id="stamp-image" src="./images/stamp.png" alt="审批通过" class="absolute top-8 right-8 w-28 h-28 transform rotate-15 opacity-80 pointer-events-none hidden">
+                    
+                    <div id="preview-buttons" class="bg-gray-50 p-6 flex justify-around border-t">
+                        <button class="py-2 px-8 bg-red-600 text-white rounded-full font-semibold hover:bg-red-700 transition">取消申请</button>
+                        <button class="py-2 px-12 bg-red-800 text-white rounded-full font-semibold hover:bg-red-900 transition">编辑</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('leave-form');
+            const inputs = form.querySelectorAll('input, select, textarea');
+
+            const previewFields = {
+                'name': document.getElementById('preview-name'),
+                'leave-type': document.getElementById('preview-leave-type'),
+                'start-time': document.getElementById('preview-start-time'),
+                'end-time': document.getElementById('preview-end-time'),
+                'destination-city': document.getElementById('preview-destination-city'),
+                'destination-address': document.getElementById('preview-destination-address'),
+                'transport-mode': document.getElementById('preview-transport-mode'),
+                'parent-phone': document.getElementById('preview-parent-phone'),
+                'approver': document.getElementById('preview-approver'),
+                'reason': document.getElementById('preview-reason'),
+            };
+            
+            // 表单元素
+            const destinationDetailsForm = document.getElementById('destination-details');
+            const proofUpload = document.getElementById('proof-upload');
+            const statusSelect = document.getElementById('status');
+            const exportBtn = document.getElementById('export-btn');
+
+            // 预览元素
+            const previewContainer = document.getElementById('preview-container');
+            const previewIsLeaving = document.getElementById('preview-is-leaving');
+            const previewDestinationDetails = document.getElementById('preview-destination-details');
+            const proofImagePreview = document.getElementById('proof-image-preview');
+            const proofFilename = document.getElementById('proof-filename');
+            const stampImage = document.getElementById('stamp-image');
+            
+            function formatDateTime(dateTimeString) {
+                if (!dateTimeString) return '';
+                const date = new Date(dateTimeString);
+                if (isNaN(date)) return '';
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                const hours = String(date.getHours()).padStart(2, '0');
+                const minutes = String(date.getMinutes()).padStart(2, '0');
+                const seconds = String(date.getSeconds()).padStart(2, '0');
+                return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+            }
+
+            function toggleDestinationFields() {
+                const leaveJinanRadio = document.getElementById('leave-campus-leave-jinan');
+                const shouldShow = leaveJinanRadio.checked;
+                if (shouldShow) {
+                    destinationDetailsForm.classList.remove('hidden');
+                    previewDestinationDetails.classList.remove('hidden');
+                } else {
+                    destinationDetailsForm.classList.add('hidden');
+                    previewDestinationDetails.classList.add('hidden');
+                }
+            }
+
+            function updatePreview() {
+                toggleDestinationFields();
+                
+                const leaveOption = document.querySelector('input[name="leave-option"]:checked').value;
+                let leaveText = '否';
+                if (leaveOption === 'stay') {
+                    leaveText = '是，不离开济南';
+                } else if (leaveOption === 'leave') {
+                    leaveText = '是，离开济南';
+                }
+                previewIsLeaving.textContent = leaveText;
+
+
+                Object.keys(previewFields).forEach(id => {
+                    const inputElement = document.getElementById(id);
+                    const previewElement = previewFields[id];
+                    if (inputElement && previewElement) {
+                        let value = inputElement.value;
+                        if (inputElement.type === 'datetime-local') {
+                           value = formatDateTime(value);
+                        }
+                        previewElement.textContent = value;
+                    }
+                });
+                
+                const status = statusSelect.value;
+                if (status === 'approved') {
+                    stampImage.classList.remove('hidden');
+                } else {
+                    stampImage.classList.add('hidden');
+                }
+            }
+
+            inputs.forEach(input => {
+                input.addEventListener('input', updatePreview);
+            });
+            
+            proofUpload.addEventListener('change', function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    proofImagePreview.src = URL.createObjectURL(file);
+                    proofFilename.textContent = file.name;
+                } else {
+                    proofImagePreview.src = './images/placeholder.png';
+                    proofFilename.textContent = 'image.jpg';
+                }
+            });
+
+            // --- 导出图片功能 ---
+            exportBtn.addEventListener('click', () => {
+                const buttonsToHide = document.getElementById('preview-buttons');
+                const elementToCapture = document.getElementById('preview-container');
+
+                buttonsToHide.style.display = 'none';
+
+                html2canvas(elementToCapture, {
+                    useCORS: true,
+                    backgroundColor: '#ffffff'
+                }).then(contentCanvas => {
+                    const bgImage = new Image();
+                    bgImage.crossOrigin = 'Anonymous';
+                    bgImage.onload = () => {
+                        const finalWidth = 800;
+                        const finalHeight = 1600;
+
+                        const finalCanvas = document.createElement('canvas');
+                        finalCanvas.width = finalWidth;
+                        finalCanvas.height = finalHeight;
+                        const ctx = finalCanvas.getContext('2d');
+
+                        const hRatio = finalWidth / bgImage.width;
+                        const vRatio = finalHeight / bgImage.height;
+                        const ratio = Math.max(hRatio, vRatio);
+                        const centerShiftX = (finalWidth - bgImage.width * ratio) / 2;
+                        const centerShiftY = 0; 
+                        ctx.drawImage(bgImage, 0, 0, bgImage.width, bgImage.height,
+                                      centerShiftX, centerShiftY, bgImage.width * ratio, bgImage.height * ratio);
+
+                        const contentPadding = 80;
+                        const contentMaxWidth = finalWidth - (contentPadding * 2);
+                        const scale = contentMaxWidth / contentCanvas.width;
+                        const contentScaledWidth = contentCanvas.width * scale;
+                        const contentScaledHeight = contentCanvas.height * scale;
+                        const contentX = (finalWidth - contentScaledWidth) / 2;
+                        const contentY = 150; 
+
+                        ctx.drawImage(contentCanvas, contentX, contentY, contentScaledWidth, contentScaledHeight);
+
+                        const link = document.createElement('a');
+                        link.download = '请假条.png';
+                        link.href = finalCanvas.toDataURL('image/png');
+                        link.click();
+                        
+                        buttonsToHide.style.display = 'flex';
+                    };
+
+                    bgImage.src = 'C:\Users\Xiangpisiji\Desktop\images\background.png';
+
+                }).catch(err => {
+                    console.error("导出图片失败:", err);
+                    buttonsToHide.style.display = 'flex';
+                });
+            });
+
+            // 初始化预览
+            updatePreview();
+        });
+    </script>
+</body>
+</html>
+
