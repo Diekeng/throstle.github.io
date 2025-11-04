@@ -125,33 +125,33 @@
 
             <!-- 右侧预览区域 -->
             <div class="p-4 md:p-8 rounded-2xl shadow-lg flex items-center justify-center" style="background-image: url('images/background.png'); background-size: cover; background-position: top;">
-                <div id="preview-container" class="w-full max-h-screen max-w-2xl bg-white rounded-xl shadow-2xl relative overflow-hidden">
+                <div id="preview-container" class="w-full max-w-2xl bg-white rounded-xl shadow-2xl relative overflow-hidden">
                     <div class="p-6 divide-y-2 divide-slate-300">
                         <div class="flex justify-between items-center mb-4">
                             <h3 class="text-xl font-bold text-gray-800">记录详情</h3>
                             <span class="text-gray-400 text-2xl cursor-pointer">&times;</span>
                         </div>
 
-                        <div class="space-y-2 text-xl sm:text-base">
-			    <div class="flex"><span class="w-36 text-gray-800 shrink-0 my-2"></span><span id="" class="font-medium text-gray-500 my-2"></span></div>
-	 		    <div class="flex"><span class="w-36 text-gray-800 shrink-0 my-2"></span><span id="" class="font-medium text-gray-500 my-2"></span></div>
-                            <div class="flex"><span class="w-36 text-gray-800 shrink-0 my-2">姓名：</span><span id="preview-name" class="font-medium text-gray-500 my-2"></span></div>
-                            <div class="flex"><span class="w-36 text-gray-800 shrink-0 my-2">请假类型：</span><span id="preview-leave-type" class="font-medium text-gray-500 my-2"></span></div>
-                            <div class="flex"><span class="w-36 text-gray-800 shrink-0 my-2">开始时间：</span><span id="preview-start-time" class="font-medium text-gray-500 my-2"></span></div>
-                            <div class="flex"><span class="w-36 text-gray-800 shrink-0 my-2">结束时间：</span><span id="preview-end-time" class="font-medium text-gray-500 my-2"></span></div>
-                            <div class="flex"><span class="w-36 text-gray-800 shrink-0 my-2">是否离校：</span><span id="preview-is-leaving" class="font-medium text-gray-500 my-2"></span></div>
+                        <div class="space-y-3 md:space-y-6 text-sm md:text-xl">
+			    <div class="flex"><span class="w-28 md:w-36 text-gray-800 shrink-0"></span><span id="" class="font-medium text-gray-500"></span></div>
+	 		    <div class="flex"><span class="w-28 md:w-36 text-gray-800 shrink-0"></span><span id="" class="font-medium text-gray-500"></span></div>
+                            <div class="flex"><span class="w-28 md:w-36 text-gray-800 shrink-0">姓名：</span><span id="preview-name" class="font-medium text-gray-500"></span></div>
+                            <div class="flex"><span class="w-28 md:w-36 text-gray-800 shrink-0">请假类型：</span><span id="preview-leave-type" class="font-medium text-gray-500"></span></div>
+                            <div class="flex"><span class="w-28 md:w-36 text-gray-800 shrink-0">开始时间：</span><span id="preview-start-time" class="font-medium text-gray-500"></span></div>
+                            <div class="flex"><span class="w-28 md:w-36 text-gray-800 shrink-0">结束时间：</span><span id="preview-end-time" class="font-medium text-gray-500"></span></div>
+                            <div class="flex"><span class="w-28 md:w-36 text-gray-800 shrink-0">是否离校：</span><span id="preview-is-leaving" class="font-medium text-gray-500"></span></div>
                              <!-- 条件性显示的预览项 -->
                             <div id="preview-destination-details" class="hidden space-y-3">
-                                <div class="flex"><span class="w-36 text-gray-800 shrink-0 my-2">目的地省市：</span><span id="preview-destination-city" class="font-medium text-gray-500 my-2"></span></div>
-                                <div class="flex"><span class="w-36 text-gray-800 shrink-0 my-2">具体地点：</span><span id="preview-destination-address" class="font-medium text-gray-500 my-2"></span></div>
-                                <div class="flex"><span class="w-36 text-gray-800 shrink-0 my-2">出行方式：</span><span id="preview-transport-mode" class="font-medium text-gray-500 my-2"></span></div>
+                                <div class="flex"><span class="w-28 md:w-36 text-gray-800 shrink-0">目的地省市：</span><span id="preview-destination-city" class="font-medium text-gray-500"></span></div>
+                                <div class="flex"><span class="w-28 md:w-36 text-gray-800 shrink-0">具体地点：</span><span id="preview-destination-address" class="font-medium text-gray-500"></span></div>
+                                <div class="flex"><span class="w-28 md:w-36 text-gray-800 shrink-0">出行方式：</span><span id="preview-transport-mode" class="font-medium text-gray-500"></span></div>
                             </div>
-                            <div class="flex"><span class="w-36 text-gray-800 shrink-0 my-2">家长联系电话：</span><span id="preview-parent-phone" class="font-medium text-gray-500 my-2"></span></div>
-                            <div class="flex"><span class="w-36 text-gray-800 shrink-0 my-2">审批人：</span><span id="preview-approver" class="font-medium text-gray-500 my-2"></span></div>
-                            <div class="flex"><span class="w-36 text-gray-800 shrink-0 my-2">当前审批流程：</span><span class="font-medium text-gray-500 my-2">审批结束</span></div>
-                            <div class="flex"><span class="w-36 text-gray-800 shrink-0 my-2">请假原因：</span><span id="preview-reason" class="font-medium text-gray-500 my-2"></span></div>
+                            <div class="flex"><span class="w-28 md:w-36 text-gray-800 shrink-0">家长联系电话：</span><span id="preview-parent-phone" class="font-medium text-gray-500"></span></div>
+                            <div class="flex"><span class="w-28 md:w-36 text-gray-800 shrink-0">审批人：</span><span id="preview-approver" class="font-medium text-gray-500"></span></div>
+                            <div class="flex"><span class="w-28 md:w-36 text-gray-800 shrink-0">当前审批流程：</span><span class="font-medium text-gray-500">审批结束</span></div>
+                            <div class="flex"><span class="w-28 md:w-36 text-gray-800 shrink-0">请假原因：</span><span id="preview-reason" class="font-medium text-gray-500"></span></div>
                              <div class="flex items-start">
-                                <span class="w-36 text-gray-800 shrink-0 pt-1 my-2">证明材料：</span>
+                                <span class="w-28 md:w-36 text-gray-800 shrink-0 pt-1">证明材料：</span>
                                 <div id="preview-proof" class="font-medium text-gray-500 flex items-center gap-2">
                                     <img id="proof-image-preview" src="images/placeholder.png" alt="证明材料" class="w-24 h-auto rounded-md border">
                                     <div class="text-left">
@@ -163,7 +163,7 @@
                         </div>
                     </div>
 
-                    <img id="stamp-image" src="images/stamp.png" alt="审批通过" class="absolute top-10 right-8 w-28 h-28 transform rotate-15 opacity-80 pointer-events-none hidden">
+                    <img id="stamp-image" src="images/stamp.png" alt="审批通过" class="absolute top-20 right-8 w-28 h-28 transform rotate-15 opacity-80 pointer-events-none hidden">
                     
                     <div id="preview-buttons" class="bg-gray-50 p-6 flex justify-around border-t">
                         <button class="py-2 px-8 bg-red-600 text-white rounded-full font-semibold hover:bg-red-700 transition">取消申请</button>
@@ -344,7 +344,6 @@
     </script>
 </body>
 </html>
-
 
 
 
